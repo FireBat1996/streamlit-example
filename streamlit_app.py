@@ -5,8 +5,8 @@ import socket
 st.title('AGV Control Panel')
 
 # AGV와 통신할 호스트와 포트
-AGV_HOST = 'AGV_IP_ADDRESS'
-AGV_PORT = 172.30.1.46
+AGV_HOST = 172.30.1.46
+AGV_PORT = 2
 
 # 소켓 생성
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
