@@ -1,40 +1,41 @@
-import altair as alt
-import numpy as np
-import pandas as pd
 import streamlit as st
+import socket
 
-"""
-# Welcome to Streamlit!
+# Streamlit 애플리케이션 구성
+st.title('AGV Control Panel')
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:.
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+# AGV와 통신할 호스트와 포트
+AGV_HOST = 'AGV_IP_ADDRESS'
+AGV_PORT = 12345  # 예시 포트번호
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+# 소켓 생성
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket.connect((AGV_HOST, AGV_PORT))
 
-num_points = st.slider("Number of points in spiral", 1, 10000, 1100)
-num_turns = st.slider("Number of turns in spiral", 1, 300, 31)
+# 버튼 클릭 이벤트 핸들러
+if st.button('1'):
+    # AGV에 '1' 신호를 보내는 코드
+    signal = '1'
+    client_socket.sendall(signal.encode())
+    st.write(f"Sending signal '{signal}' to AGV")
 
-indices = np.linspace(0, 1, num_points)
-theta = 2 * np.pi * num_turns * indices
-radius = indices
+if st.button('2'):
+    # AGV에 '2' 신호를 보내는 코드
+    signal = '2'
+    client_socket.sendall(signal.encode())
+    st.write(f"Sending signal '{signal}' to AGV")
 
-x = radius * np.cos(theta)
-y = radius * np.sin(theta)
+if st.button('R'):
+    # AGV에 'R' 신호를 보내는 코드
+    signal = 'R'
+    client_socket.sendall(signal.encode())
+    st.write(f"Sending signal '{signal}' to AGV")
 
-df = pd.DataFrame({
-    "x": x,
-    "y": y,
-    "idx": indices,
-    "rand": np.random.randn(num_points),
-})
+if st.button('S'):
+    # AGV에 'S' 신호를 보내는 코드
+    signal = 'S'
+    client_socket.sendall(signal.encode())
+    st.write(f"Sending signal '{signal}' to AGV")
 
-st.altair_chart(alt.Chart(df, height=700, width=700)
-    .mark_point(filled=True)
-    .encode(
-        x=alt.X("x", axis=None),
-        y=alt.Y("y", axis=None),
-        color=alt.Color("idx", legend=None, scale=alt.Scale()),
-        size=alt.Size("rand", legend=None, scale=alt.Scale(range=[1, 150])),
-    ))
+# 소켓 종료
+client_socket.close()
